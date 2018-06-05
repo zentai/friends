@@ -15,8 +15,8 @@ def success():
 
 class NewFriend(Resource):
     def post(self):
-        friendship_json = request.get_json(force=True)
-        friends = friendship_json.get("friends", [])
+        query = request.get_json(force=True)
+        friends = query.get("friends", [])
 
         if len(set(friends)) < 2:
             return error(101, "at lease 2 difference email to create friendship")
