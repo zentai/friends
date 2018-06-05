@@ -30,7 +30,24 @@ class NewFriend(Resource):
         return success()
 
 
+class RetrivalFriends(Resource):
+    def post(self):
+        query = request.get_json(force=True)
+        email = query.get("email", None)
+
+        if not email:
+            return error(102, "please pass me the email your are looking for.")
+
+        if email not in friendship:
+            return error(103, "email %s not registered" % email)
+
+        success_resp = success()
+        success_resp["friends"] = list(friendship.get(email))
+        success_resp["count"] = len(friendship.get(email))
+        return success_resp
+
 api.add_resource(NewFriend, '/new_friends')
+api.add_resource(RetrivalFriends, '/friends_list')
 
 if __name__ == '__main__':
     app.run(debug=True)
