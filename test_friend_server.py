@@ -4,7 +4,7 @@ import json
 import sys
 
 class TestFlaskApiUsingRequests(unittest.TestCase):
-    def test_new_friends(self):
+    def test_0_new_friends(self):
         response = requests.post("http://127.0.0.1:5000/new_friends",
                                  json={"friends": ["andy@example.com",
                                                    "walao81@example.com",
@@ -88,6 +88,31 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
                                        "target": "MrBean@example.com"})
 
         self.assertEqual(response.json(), {"success": True})
+
+
+    def test_common_friends(self):
+        response = requests.post("http://127.0.0.1:5000/common_friends",
+                                 json={"friends": ["andy@example.com",
+                                                   "MrBean@example.com"] })
+
+        self.assertEqual(response.json(), {"success": True, "count": 1,
+                                           "friends": ["walao81@example.com"]})
+
+    def test_common_friends_only_one_email(self):
+        response = requests.post("http://127.0.0.1:5000/common_friends",
+                                 json={"friends": ["andy@example.com"]})
+
+        self.assertEqual(response.json(), {"success": False, "code": 106,
+                                           "reason": "only support 2 difference email looking friendship"})
+
+    def test_common_friends_when_one_email_not_registered(self):
+        no_register_mail = "no_register@gmail.com"
+        response = requests.post("http://127.0.0.1:5000/common_friends",
+                                 json={"friends": ["andy@example.com",
+                                                   no_register_mail]})
+
+        self.assertEqual(response.json(), {"success": False, "code": 107,
+                                           "reason": "email %s not registered" % no_register_mail})
 
 
 if __name__ == "__main__":

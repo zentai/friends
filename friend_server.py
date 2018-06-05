@@ -48,6 +48,31 @@ class RetrivalFriends(Resource):
         return success_resp
 
 
+class CommonFriends(Resource):
+    def post(self):
+        query = request.get_json(force=True)
+        friends = query.get("friends", [])
+
+        if len(set(friends)) != 2:
+            return error(106, "only support 2 difference email looking friendship")
+
+        for email in friends:
+            if email not in friendship:
+                return error(107, "email %s not registered" % email)
+
+        fset_a = friendship.get(friends[0], set())
+        fset_b = friendship.get(friends[1], set())
+        min_set = fset_a if len(fset_a) < len(fset_b) else fset_b
+        max_set = fset_a if len(fset_a) >= len(fset_b) else fset_b
+
+        common_friends = [email for email in min_set if email in max_set]
+
+        success_resp = success()
+        success_resp["friends"] = common_friends
+        success_resp["count"] = len(common_friends)
+        return success_resp
+
+
 class Subscribe(Resource):
     def post(self):
         query = request.get_json(force=True)
@@ -69,6 +94,7 @@ class Subscribe(Resource):
 
 api.add_resource(NewFriend, '/new_friends')
 api.add_resource(RetrivalFriends, '/friends_list')
+api.add_resource(CommonFriends, '/common_friends')
 api.add_resource(Subscribe, '/subscribe')
 
 if __name__ == '__main__':
