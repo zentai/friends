@@ -6,6 +6,7 @@ app = Flask(__name__)
 api = Api(app)
 
 friendship = {}
+subscribe = {}
 
 def error(code, reason):
     return { "success": False, "code": code, "reason": reason }
@@ -46,8 +47,29 @@ class RetrivalFriends(Resource):
         success_resp["count"] = len(friendship.get(email))
         return success_resp
 
+
+class Subscribe(Resource):
+    def post(self):
+        query = request.get_json(force=True)
+        requestor = query.get("requestor", None)
+        target = query.get("target", None)
+
+        if not requestor or not target:
+            return error(104, "please provided both requestor and target email")
+
+        if target not in friendship:
+            return error(105, "subscribe target %s not registered" % target)
+
+        if target not in subscribe:
+            subscribe[target] = set()
+        subscribe[target].update(requestor)
+
+        return success()
+
+
 api.add_resource(NewFriend, '/new_friends')
 api.add_resource(RetrivalFriends, '/friends_list')
+api.add_resource(Subscribe, '/subscribe')
 
 if __name__ == '__main__':
     app.run(debug=True)
