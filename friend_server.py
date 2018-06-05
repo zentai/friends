@@ -19,7 +19,7 @@ class NewFriend(Resource):
         friends = query.get("friends", [])
 
         if len(set(friends)) < 2:
-            return error(101, "at lease 2 difference email to create friendship")
+            return error(101, "at lease 2 difference email to build friendship")
 
         for x in range(len(friends)):
             focus = friends[0]
