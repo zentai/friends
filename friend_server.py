@@ -85,6 +85,10 @@ class Subscribe(Resource):
         if target not in friendship:
             return error(105, "subscribe target %s not registered" % target)
 
+        if requestor not in friendship:
+            return error(106, "subscribe requestor %s not registered" % requestor)
+
+
         if target not in subscribe:
             subscribe[target] = set()
         subscribe[target].update(requestor)
