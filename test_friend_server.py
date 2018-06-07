@@ -126,5 +126,19 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
                                            "reason": "email %s not registered" % no_register_mail})
 
 
+    def test_new_friend_with_blacklist(self):
+        response = requests.post("http://127.0.0.1:5000/block",
+                                 json={"requestor": "andy@example.com",
+                                       "target": "john@example.com"})
+        self.assertEqual(response.json(), {"success": True})
+
+        response = requests.post("http://127.0.0.1:5000/new_friends",
+                                 json={"friends": ["andy@example.com",
+                                                   "john@example.com"] })
+        self.assertEqual(response.json(), {"success": False, "code": 107,
+                                           "reason": "blacklist: [u'john@example.com', u'andy@example.com']"})
+
+
+
 if __name__ == "__main__":
     unittest.main()

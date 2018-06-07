@@ -7,12 +7,18 @@ api = Api(app)
 
 friendship = {}
 subscribe = {}
+blacklist = {}
 
 def error(code, reason):
     return { "success": False, "code": code, "reason": reason }
 
 def success():
     return { "success": True }
+
+def is_black_list(user_a, user_b):
+    user_a_blacklist = blacklist.get(user_a, [])
+    user_b_blacklist = blacklist.get(user_b, [])
+    return user_a in user_b_blacklist or user_b in user_a_blacklist
 
 class NewFriend(Resource):
     def post(self):
@@ -22,12 +28,22 @@ class NewFriend(Resource):
         if len(set(friends)) < 2:
             return error(101, "at lease 2 difference email to build friendship")
 
+        black_list_friends = []
         for x in range(len(friends)):
             focus = friends[0]
             fset = friendship.get(focus, set())
-            fset.update(friends[1:])
+            white_list_friends = []
+            for friend in friends[1:]:
+                if is_black_list(focus, friend):
+                    black_list_friends.append(friend)
+                else:
+                    white_list_friends.append(friend)
+            fset.update(white_list_friends)
             friendship[focus] = fset
             friends = friends[1:] + friends[:1]
+
+        if len(black_list_friends) != 0:
+            return error(107, "blacklist: %s" % black_list_friends)
         return success()
 
 
@@ -96,10 +112,30 @@ class Subscribe(Resource):
         return success()
 
 
+class Block(Resource):
+    def post(self):
+        query = request.get_json(force=True)
+        requestor = query.get("requestor", None)
+        target = query.get("target", None)
+
+        if not requestor or not target:
+            return error(104, "please provided both requestor and target email")
+
+        if requestor not in friendship:
+            return error(106, "subscribe requestor %s not registered" % requestor)
+
+        if requestor not in blacklist:
+            blacklist[requestor] = set()
+
+        blacklist[requestor].update([target])
+        return success()
+
+
 api.add_resource(NewFriend, '/new_friends')
 api.add_resource(RetrivalFriends, '/friends_list')
 api.add_resource(CommonFriends, '/common_friends')
 api.add_resource(Subscribe, '/subscribe')
+api.add_resource(Block, '/block')
 
 if __name__ == '__main__':
     app.run(debug=True)
