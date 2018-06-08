@@ -1,6 +1,8 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
 import json
+import re
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -129,11 +131,30 @@ class Block(Resource):
         return success()
 
 
+class NotifyList(Resource):
+    def post(self):
+        query = request.get_json(force=True)
+        sender = query.get("sender", None)
+        text = query.get("text", "")
+
+        if not sender:
+            return error(108, "sender empty")
+
+        notify_list = set()
+        notify_list.update(subscribe.get(sender, set()))
+        notify_list.update(re.findall(r"[\w\.-]+@[\w\.-]+\.\w+", text))
+        notify_list = notify_list.difference(blacklist.get(sender, set()))
+
+        success_resp = success()
+        success_resp["recipients"] = list(notify_list)
+        return success_resp
+
 api.add_resource(NewFriend, '/new_friends')
 api.add_resource(RetrivalFriends, '/friends_list')
 api.add_resource(CommonFriends, '/common_friends')
 api.add_resource(Subscribe, '/subscribe')
 api.add_resource(Block, '/block')
+api.add_resource(NotifyList, '/notify_list')
 
 if __name__ == '__main__':
     app.run(debug=True)

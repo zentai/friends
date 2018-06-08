@@ -133,7 +133,14 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
         self.assertEqual(response.json(), {"success": False, "code": 107,
                                            "reason": "blacklist: [u'john@example.com', u'andy@example.com']"})
 
+    def test_notify(self):
+        response = requests.post("http://127.0.0.1:5000/notify_list",
+                                 json={"sender":  "john@example.com",
+                                       "text": "Hello World! kate@example.com"})
 
+        self.assertEqual(response.json(), {"success": True,
+                                           "recipients": [ u"lisa@example.com",
+                                                           u"kate@example.com"]})
 
 if __name__ == "__main__":
     unittest.main()
