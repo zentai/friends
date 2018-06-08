@@ -56,8 +56,7 @@ class RetrivalFriends(Resource):
             return error(102, "please pass me the email your are looking for.")
 
         if email not in friendship:
-            return error(103, "email %s not registered" % email)
-
+            friendship[email] = set()
         success_resp = success()
         success_resp["friends"] = list(friendship.get(email))
         success_resp["count"] = len(friendship.get(email))
@@ -74,7 +73,7 @@ class CommonFriends(Resource):
 
         for email in friends:
             if email not in friendship:
-                return error(107, "email %s not registered" % email)
+                friendship[email] = set()
 
         fset_a = friendship.get(friends[0], set())
         fset_b = friendship.get(friends[1], set())
@@ -99,15 +98,14 @@ class Subscribe(Resource):
             return error(104, "please provided both requestor and target email")
 
         if target not in friendship:
-            return error(105, "subscribe target %s not registered" % target)
+            friendship[target] = set()
 
         if requestor not in friendship:
-            return error(106, "subscribe requestor %s not registered" % requestor)
-
+            friendship[requestor] = set()
 
         if target not in subscribe:
             subscribe[target] = set()
-        subscribe[target].update(requestor)
+        subscribe[target].update([requestor])
 
         return success()
 
@@ -122,7 +120,7 @@ class Block(Resource):
             return error(104, "please provided both requestor and target email")
 
         if requestor not in friendship:
-            return error(106, "subscribe requestor %s not registered" % requestor)
+            friendship[requestor] = set()
 
         if requestor not in blacklist:
             blacklist[requestor] = set()

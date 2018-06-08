@@ -47,9 +47,8 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
         no_register_mail = "no_register@gmail.com"
         response = requests.post("http://127.0.0.1:5000/friends_list",
                                  json={"email": no_register_mail})
-        self.assertEqual(response.json(), {"success": False, "code": 103,
-                                           "reason": "email %s not registered"
-                                           % no_register_mail})
+        self.assertEqual(response.json(), {"success": True, "count": 0,
+                                           "friends": []})
 
 
     def test_subscribe_without_requestor(self):
@@ -76,9 +75,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
                                  json={"requestor": "andy@example.com",
                                        "target": no_register_mail})
 
-        self.assertEqual(response.json(), {"success": False, "code": 105,
-                                           "reason": "subscribe target %s not registered"
-                                           % no_register_mail})
+        self.assertEqual(response.json(), {"success": True})
 
 
     def test_subscribe_non_register_requestor(self):
@@ -87,9 +84,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
                                  json={"requestor": no_register_mail,
                                        "target": "andy@example.com"})
 
-        self.assertEqual(response.json(), {"success": False, "code": 106,
-                                           "reason": "subscribe requestor %s not registered"
-                                           % no_register_mail})
+        self.assertEqual(response.json(), {"success": True})
 
 
     def test_subscribe(self):
@@ -122,8 +117,8 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
                                  json={"friends": ["andy@example.com",
                                                    no_register_mail]})
 
-        self.assertEqual(response.json(), {"success": False, "code": 107,
-                                           "reason": "email %s not registered" % no_register_mail})
+        self.assertEqual(response.json(), {"success": True, "count": 0,
+                                           "friends": []})
 
 
     def test_new_friend_with_blacklist(self):
