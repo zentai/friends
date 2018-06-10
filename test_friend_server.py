@@ -72,7 +72,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
     def test_subscribe_non_register_target(self):
         no_register_mail = "no_register@gmail.com"
         response = requests.post("http://127.0.0.1:5000/subscribe",
-                                 json={"requestor": "andy@example.com",
+                                 json={"requestor": "lisa@example.com",
                                        "target": no_register_mail})
 
         self.assertEqual(response.json(), {"success": True})
@@ -82,7 +82,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
         no_register_mail = "no_register@gmail.com"
         response = requests.post("http://127.0.0.1:5000/subscribe",
                                  json={"requestor": no_register_mail,
-                                       "target": "andy@example.com"})
+                                       "target": "john@example.com"})
 
         self.assertEqual(response.json(), {"success": True})
 
@@ -90,8 +90,8 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
     def test_subscribe(self):
         no_register_mail = "no_register@gmail.com"
         response = requests.post("http://127.0.0.1:5000/subscribe",
-                                 json={"requestor": "andy@example.com",
-                                       "target": "MrBean@example.com"})
+                                 json={"requestor": "lisa@example.com",
+                                       "target": "john@example.com"})
 
         self.assertEqual(response.json(), {"success": True})
 
