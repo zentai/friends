@@ -11,6 +11,9 @@ friendship = {}
 subscribe = {}
 blacklist = {}
 
+def email_verified(email):
+    return re.match(r"[\w\.-]+@[\w\.-]+\.\w+", email)
+
 def error(code, reason):
     return { "success": False, "code": code, "reason": reason }
 
@@ -29,6 +32,10 @@ class NewFriend(Resource):
 
         if len(set(friends)) < 2:
             return error(101, "at lease 2 difference email to build friendship")
+
+        for email in friends:
+            if not email_verified(email):
+                return error(109, "invalid email")
 
         black_list_friends = []
         for x in range(len(friends)):
@@ -57,6 +64,9 @@ class RetrivalFriends(Resource):
         if not email:
             return error(102, "please pass me the email your are looking for.")
 
+        if not email_verified(email):
+            return error(109, "invalid email")
+
         if email not in friendship:
             friendship[email] = set()
         success_resp = success()
@@ -74,6 +84,9 @@ class CommonFriends(Resource):
             return error(106, "only support 2 difference email looking friendship")
 
         for email in friends:
+            if not email_verified(email):
+                return error(109, "invalid email")
+
             if email not in friendship:
                 friendship[email] = set()
 
@@ -99,6 +112,9 @@ class Subscribe(Resource):
         if not requestor or not target:
             return error(104, "please provided both requestor and target email")
 
+        if not email_verified(requestor) or not email_verified(target):
+            return error(109, "invalid email")
+
         if target not in friendship:
             friendship[target] = set()
 
@@ -121,6 +137,9 @@ class Block(Resource):
         if not requestor or not target:
             return error(104, "please provided both requestor and target email")
 
+        if not email_verified(requestor) or not email_verified(target):
+            return error(109, "invalid email")
+
         if requestor not in friendship:
             friendship[requestor] = set()
 
@@ -136,6 +155,9 @@ class NotifyList(Resource):
         query = request.get_json(force=True)
         sender = query.get("sender", None)
         text = query.get("text", "")
+
+        if not email_verified(sender):
+            return error(109, "invalid email")
 
         if not sender:
             return error(108, "sender empty")
