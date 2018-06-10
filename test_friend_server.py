@@ -62,7 +62,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
 
     def test_subscribe_without_target(self):
         response = requests.post("http://127.0.0.1:5000/subscribe",
-                                 json={"requestor": "lisa@example.com"})
+                                 json={"requestor": "MrBean@example.com"})
 
         self.assertEqual(response.json(), {"success": False, "code": 104,
                                            "reason": "please provided both "
@@ -72,7 +72,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
     def test_subscribe_non_register_target(self):
         no_register_mail = "no_register@gmail.com"
         response = requests.post("http://127.0.0.1:5000/subscribe",
-                                 json={"requestor": "lisa@example.com",
+                                 json={"requestor": "MrBean@example.com",
                                        "target": no_register_mail})
 
         self.assertEqual(response.json(), {"success": True})
@@ -82,7 +82,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
         no_register_mail = "no_register@gmail.com"
         response = requests.post("http://127.0.0.1:5000/subscribe",
                                  json={"requestor": no_register_mail,
-                                       "target": "john@example.com"})
+                                       "target": "MrBean@example.com"})
 
         self.assertEqual(response.json(), {"success": True})
 
@@ -133,7 +133,7 @@ class TestFlaskApiUsingRequests(unittest.TestCase):
         self.assertEqual(response.json(), {"success": False, "code": 107,
                                            "reason": "blacklist: [u'john@example.com', u'andy@example.com']"})
 
-    def test_notify(self):
+    def test_z_notify(self):
         response = requests.post("http://127.0.0.1:5000/notify_list",
                                  json={"sender":  "john@example.com",
                                        "text": "Hello World! kate@example.com"})
