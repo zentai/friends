@@ -1,3 +1,18 @@
+**source code and document:**
+https://github.com/zentai/friends
+
+**Test server:**
+http://interviews.pythonanywhere.com/
+
+**Example:**
+```
+curl --header "Content-Type: application/json" --request POST --data '{"friends": ["andy@example.com", "walao81@example.com", "MrBean@example.com"] }' http://interviews.pythonanywhere.com/new_friends
+
+
+curl --header "Content-Type: application/json" --request POST --data '{"email": "walao81@example.com"}' http://interviews.pythonanywhere.com/friends_list
+```
+
+
 **New Friend**
 ----
   create relationship between multiple email.
