@@ -9,7 +9,7 @@
 
   ```json
   {
-    friends:
+    "friends":
       [
         "andy@example.com",
         "john@example.com"
@@ -33,7 +33,7 @@
 
   ```json
   {
-  email: "andy@example.com"
+  "email": "andy@example.com"
   }
   ```
 
@@ -63,7 +63,7 @@
 
   ```json
 {
-  friends:
+  "friends":
     [
       "andy@example.com",
       "john@example.com"
@@ -173,7 +173,7 @@ at least one of the following:
     **Content:**
 ```json
 {
-  "success": true
+  "success": true,
   "recipients":
     [
       "lisa@example.com",
