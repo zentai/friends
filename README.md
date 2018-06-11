@@ -1,6 +1,7 @@
 **New Friend**
 ----
   create relationship between multiple email.
+
 |Param |Description|
 |---|---|
 |friends|email list to build relationship|
@@ -10,8 +11,8 @@
   {
     friends:
       [
-        'andy@example.com',
-        'john@example.com'
+        "andy@example.com",
+        "john@example.com"
       ]
   }
   ```
@@ -24,6 +25,7 @@
 **List Friend**
 ----
   create relationship between multiple email.
+
 |Param |Description|
 |---|---|
 |email|list out all registered friends by email|
@@ -31,7 +33,7 @@
 
   ```json
   {
-  email: 'andy@example.com'
+  email: "andy@example.com"
   }
   ```
 
@@ -44,7 +46,7 @@
   "success": true,
   "friends" :
     [
-      'john@example.com'
+      "john@example.com"
     ],
   "count" : 1
 }
@@ -53,6 +55,7 @@
 **Common Friends**
 ----
   filter out common friends between more user.
+
 |Param |Description|
 |---|---|
 |friends|list out common friends by email list|
@@ -62,8 +65,8 @@
 {
   friends:
     [
-      'andy@example.com',
-      'john@example.com'
+      "andy@example.com",
+      "john@example.com"
     ]
 }
   ```
@@ -77,7 +80,7 @@
   "success": true,
   "friends" :
     [
-      'common@example.com'
+      "common@example.com"
     ],
   "count" : 1
 }
@@ -86,6 +89,7 @@
 **Subscribe**
 ----
   get notify without build friendship connection
+
 |Param |Description|
 |---|---|
 |requestor|Who will be notify|
